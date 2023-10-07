@@ -1,5 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
+// import LotteryContract from "../artifacts/contracts/LotteryContract.sol/Lottery.json"
 
 /**
  * Deploys a contract named "YourContract" using the deployer account and
@@ -31,8 +32,16 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     autoMine: true,
   });
 
+  await deploy("LotteryContract", {
+    from: deployer,
+    args: [],
+    log: true,
+    autoMine: true,
+  });
+
   // Get the deployed contract
-  // const yourContract = await hre.ethers.getContract("YourContract", deployer);
+  const yourContract = await hre.ethers.getContract("YourContract", deployer);
+  const lotteryContract = await hre.ethers.getContract("LotteryContract", deployer);
 };
 
 export default deployYourContract;
