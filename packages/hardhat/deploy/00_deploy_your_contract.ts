@@ -34,7 +34,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
 
   await deploy("LotteryContract", {
     from: deployer,
-    args: [],
+    args: ["YOLO", "YLL"],
     log: true,
     autoMine: true,
   });

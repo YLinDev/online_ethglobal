@@ -1,55 +1,51 @@
 pragma solidity ^0.8.17;
 
-contract LotteryContract {
-    address public owner;
+// Import necessary OpenZeppelin contracts
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
+contract LotteryContract is ERC721Enumerable, Ownable {
     uint public lotteryId;
+    uint public lotteryEndTime; // Timestamp for the end of the lottery period
+    mapping(uint => address) public lotteryHistory;
 
-    address payable[] public players;
-
-    mapping(uint => address payable)  public  lotteryHistory;
-
-    constructor() {
-        owner = msg.sender;
+    constructor(string memory name, string memory symbol) ERC721(name, symbol) {
         lotteryId = 1;
+        lotteryEndTime = block.timestamp + 5 minutes; // Set the end time 3 days from deployment
     }
 
-    function getPotBalence() public view returns(uint) {
+    function getPotBalance() public view returns (uint) {
         return address(this).balance;
     }
 
-    function getPlayers() public view returns(address payable[] memory){
-        return players;
+    function getRandomNumber() public view returns (uint) {
+        return uint(keccak256(abi.encodePacked(owner(), block.timestamp)));
     }
 
-    // gotta pay to enter;
+    function pickWinner() public payable {
+        require(block.timestamp >= lotteryEndTime, "Lottery period has not ended yet");
+        require(totalSupply() > 0, "No participants to pick a winner");
+
+        uint index = getRandomNumber() % totalSupply();
+        address winner = ownerOf(index);
+        payable(winner).transfer(address(this).balance);
+
+        // Reset contract state
+        lotteryId++;
+
+        // Update the winner's history
+        lotteryHistory[lotteryId] = winner;
+
+        // Reset the lottery end time for the next round
+        lotteryEndTime = block.timestamp + 3 days;
+    }
+
     function enterLotto() public payable {
-        players.push(payable(msg.sender));
-        require(msg.value >= .000000000001 ether, "Insufficient funds must be greater then >= 000000000001 eth");
+        require(block.timestamp < lotteryEndTime, "Lottery entry period has ended");
+        require(msg.value >= 0.000000000001 ether, "Insufficient funds, must be greater than or equal to 0.000000000001 ETH");
+
+        // Mint NFT to the user
+        uint256 tokenId = totalSupply() + 1;
+        _mint(msg.sender, tokenId);
     }
-
-    function getRandomNumber()  public view returns(uint) {
-        return uint(keccak256(abi.encodePacked(owner, block.timestamp)));
-    }
-
-
-
-    function pickWinner() public onlyOwner {
-        uint index = getRandomNumber() % players.length;
-        players[index].transfer(address(this).balance);
-
-        //reset contract state
-
-        players = new address payable[](0);
-
-        lotteryId++; // updates the lottery id
-        lotteryHistory[lotteryId] = players[index]; // updates the winners logs who won in the past
-    }
-
-    modifier onlyOwner(){
-        require(msg.sender == owner);
-        _;
-    }
-
-
 }
