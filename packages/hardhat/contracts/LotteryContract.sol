@@ -1,6 +1,7 @@
 pragma solidity ^0.8.17;
 
 // Important Imports
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol";
@@ -14,7 +15,7 @@ error YOLORandomNFT_TransferFailed();
 
 
 
-contract LotteryContractNFT is ERC721Enumerable, Ownable , VRFConsumerBaseV2{
+contract LotteryContractNFT is ERC721URIStorage, ERC721Enumerable, Ownable , VRFConsumerBaseV2{
     // Lottery Variables
     uint public lotteryId;
     uint public lotteryEndTime; // Timestamp for the end of the lottery period
@@ -42,7 +43,7 @@ contract LotteryContractNFT is ERC721Enumerable, Ownable , VRFConsumerBaseV2{
     uint256 private immutable i_mintFee;
     uint256 private s_tokenCounter;
     uint256 internal constant MAX_CHANCE_VALUE = 100;
-    string[] internal s_nftTokenUri;
+    string[] internal s_nftTokenUris;
     bool private s_initialized;
 
 
@@ -62,22 +63,30 @@ contract LotteryContractNFT is ERC721Enumerable, Ownable , VRFConsumerBaseV2{
         bytes32 gasLane,
         uint256 mintFee,
         uint32 callbackGasLimit,
-        string[3] memory nftTokenUri) ERC721(name, symbol) {
+        string[3] memory nftTokenUris,
+        ERC721(name, symbol))
+
+    
         VRFConsumerBaseV2(vrfCoordinatorV2);
         ERC721("YOLO NFT", "YLN");
-        // variables initialized drom chainlink specifications
+
+        
+        {
+            // variables initialized drom chainlink specifications
         i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
         i_gasLane = gasLane;
         i_suscriptionId = suscriptionId;
         i_mintFee = mintFee;
         i_callbackGasLimit = callbackGasLimit;
-        _initializeContract(nftTokenUris);
+        _initializeContract(s_nftTokenUris);
         s_tokenCounter = 0;
         
         // Lottery Variables
         lotteryId = 1;
         lotteryEndTime = block.timestamp + 5 minutes; // Set the end time 3 days from deployment
-    }
+    
+        }
+       
 
     // Chainlink RANDOMNESS functions for the NFT
     function requestNFT()public payable returns(uint256 requestId){
@@ -103,7 +112,7 @@ contract LotteryContractNFT is ERC721Enumerable, Ownable , VRFConsumerBaseV2{
         uint256 newItemId = s_tokenCounter;
         s_tokenCounter = s_tokenCounter + 1;
         uint256 moddedRng = randomWords[0] % MAX_CHANCE_VALUE;
-        Attributes nftAttributes = getBreedFromModdedRng(moddedRng);
+        Attributes nftAttributes = getAttributeFromRng();(moddedRng);
         _safeMint(nftOwner, newItemId);
         _setTokenURI(newItemId, s_nftTokenUri[uint256(nftAttributes)]);
 
@@ -116,7 +125,7 @@ contract LotteryContractNFT is ERC721Enumerable, Ownable , VRFConsumerBaseV2{
 
     }
 
-    function getAttributeFromRG() public pure returns(Attributes){
+    function getAttributeFromRng() public pure returns(Attributes){
         uint256 totalSum = 0;
         uint256[3] memory chanceArr = getChance();
         // for loop
