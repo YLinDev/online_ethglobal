@@ -1441,7 +1441,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chainlink/contracts@npm:0.8.0":
+"@chainlink/contracts@npm:^0.8.0":
   version: 0.8.0
   resolution: "@chainlink/contracts@npm:0.8.0"
   dependencies:
@@ -3468,10 +3468,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:4.4.1":
-  version: 4.4.1
-  resolution: "@openzeppelin/contracts@npm:4.4.1"
-  checksum: 87ee7ebe8e6493fc4d657b05c5ddb5f254b73bf55d80c25a790f8e74087b6d90c0a6ec504fe45949c27501f73bca7d64129aad29488707a2c9b5afdb035966df
+"@openzeppelin/contracts@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@openzeppelin/contracts@npm:5.0.0"
+  checksum: b182288466dfa1c66e227dcd9761d3205f6451bec5c3550783cfd2f6224d67b45e3d7cb01d7f26fb07cc236bb9fb10ce84268a77c5a5ceafd900b938643f55cd
   languageName: node
   linkType: hard
 
@@ -4536,11 +4536,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 20.8.5
-  resolution: "@types/node@npm:20.8.5"
+  version: 20.8.6
+  resolution: "@types/node@npm:20.8.6"
   dependencies:
     undici-types: ~5.25.1
-  checksum: 4bca4e4f6307a6f5dc78812015eca9c5a998b35fcf3ba4058c9851d3dde2b22c914fa25a85b804eab5af2ab95375d15943dce8e9ba5e01d15f4bf516ca0d2816
+  checksum: ccfb7ac482c5a96edeb239893c5c099f5257fcc2ed9ae62fefdfbc782b79e16dbc2af9a85b379665237bf759904b44ca2be68e75d239e0297882aad42f61905c
   languageName: node
   linkType: hard
 
@@ -7035,9 +7035,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001406, caniuse-lite@npm:^1.0.30001538, caniuse-lite@npm:^1.0.30001541":
-  version: 1.0.30001547
-  resolution: "caniuse-lite@npm:1.0.30001547"
-  checksum: ec0fc2b46721887f6f4aca1f3902f03d9a1a07416d16a86b7cd4bfba60e7b6b03ab3969659d3ea0158cc2f298972c80215c06c9457eb15c649d7780e8f5e91a7
+  version: 1.0.30001549
+  resolution: "caniuse-lite@npm:1.0.30001549"
+  checksum: 7f2abeedc8cf8b92cc0613855d71b995ce436068c0bcdd798c5af7d297ccf9f52496b00181beda42d82d25079dd4b6e389c67486156d40d8854e5707a25cb054
   languageName: node
   linkType: hard
 
@@ -7904,13 +7904,13 @@ __metadata:
   linkType: hard
 
 "define-data-property@npm:^1.0.1":
-  version: 1.1.0
-  resolution: "define-data-property@npm:1.1.0"
+  version: 1.1.1
+  resolution: "define-data-property@npm:1.1.1"
   dependencies:
     get-intrinsic: ^1.2.1
     gopd: ^1.0.1
     has-property-descriptors: ^1.0.0
-  checksum: 7ad4ee84cca8ad427a4831f5693526804b62ce9dfd4efac77214e95a4382aed930072251d4075dc8dc9fc949a353ed51f19f5285a84a788ba9216cc51472a093
+  checksum: a29855ad3f0630ea82e3c5012c812efa6ca3078d5c2aa8df06b5f597c1cde6f7254692df41945851d903e05a1668607b6d34e778f402b9ff9ffb38111f1a3f0d
   languageName: node
   linkType: hard
 
@@ -8223,9 +8223,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.535":
-  version: 1.4.553
-  resolution: "electron-to-chromium@npm:1.4.553"
-  checksum: ee1fd847da4277de5630ecfc3fba22e1f429e109d254fed9c798c6d86d0ff97a7655854c4ddc86a814954846d29a912e13f1be7b647d646708c0b4fa69d3d290
+  version: 1.4.554
+  resolution: "electron-to-chromium@npm:1.4.554"
+  checksum: cbac43c50b43777327f4a7bf149ee3088c1da8b91bbcd80f78d2cc77bc52763f6d0941574499239d9caefd3430d3093f865e5f1093371418f7d6b70301eeae9b
   languageName: node
   linkType: hard
 
@@ -15861,8 +15861,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "se-2@workspace:."
   dependencies:
-    "@chainlink/contracts": 0.8.0
-    "@openzeppelin/contracts": 4.4.1
+    "@chainlink/contracts": ^0.8.0
+    "@openzeppelin/contracts": ^5.0.0
     husky: ~8.0.3
     lint-staged: ~13.2.2
   languageName: unknown
@@ -16603,11 +16603,11 @@ __metadata:
   linkType: hard
 
 "style-to-object@npm:^0.4.1":
-  version: 0.4.2
-  resolution: "style-to-object@npm:0.4.2"
+  version: 0.4.3
+  resolution: "style-to-object@npm:0.4.3"
   dependencies:
     inline-style-parser: 0.1.1
-  checksum: 314a80bcfadde41c2b9c8d717a4b1f2220954561040c2c7740496715da5cb95f99920a8eeefe2d4a862149875f352a12eda9bbef5816d7e0a71910da00d1521f
+  checksum: 3c651795c88acc429af907ff7719c132b6296521ee4a8415c8cbabd5c902ed0fd18be9e45cb07fb58b91e8671deb5d949ebfb86f305cd6a696c3140025316bfb
   languageName: node
   linkType: hard
 
@@ -17865,8 +17865,8 @@ __metadata:
   linkType: hard
 
 "viem@npm:^1.0.0":
-  version: 1.16.4
-  resolution: "viem@npm:1.16.4"
+  version: 1.16.5
+  resolution: "viem@npm:1.16.5"
   dependencies:
     "@adraffy/ens-normalize": 1.9.4
     "@noble/curves": 1.2.0
@@ -17881,7 +17881,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: a9932a74be1f32e06d0bc823fdd46feea5954c2ef0060334550461974503e3811095af008fd10a039d369d830016c034bed36d4ededee29ac0fd5d460a57c69c
+  checksum: cc07bbc8ebf616c2cc6e14f08eea59d1b34df294d1dcba72090bf10e224e87c17014db593bcff223fe6c7c30999448d786d67d9e18691906f51900db940af821
   languageName: node
   linkType: hard
 
@@ -18366,9 +18366,9 @@ __metadata:
   linkType: hard
 
 "yaml@npm:^2.1.1, yaml@npm:^2.2.2":
-  version: 2.3.2
-  resolution: "yaml@npm:2.3.2"
-  checksum: acd80cc24df12c808c6dec8a0176d404ef9e6f08ad8786f746ecc9d8974968c53c6e8a67fdfabcc5f99f3dc59b6bb0994b95646ff03d18e9b1dcd59eccc02146
+  version: 2.3.3
+  resolution: "yaml@npm:2.3.3"
+  checksum: cdfd132e7e0259f948929efe8835923df05c013c273c02bb7a2de9b46ac3af53c2778a35b32c7c0f877cc355dc9340ed564018c0242bfbb1278c2a3e53a0e99e
   languageName: node
   linkType: hard
 

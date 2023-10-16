@@ -1,73 +1,108 @@
-//SPDX-License-Indetifier: MIT
+// SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.19;
 
-// Import necessary OpenZeppelin contracts
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+contract Lottery {
+    // Event declarations
+    event LotteryEntered(address indexed participant, uint amount);
 
-contract LotteryContract is ERC721Enumerable, Ownable, VRFConsumerBase {
-    // VRF Chainlink variables:
-    bytes32 internal keyHash;
-    uint256 internal fee;
 
-    // Lottery variables:
+
+    // state variables:
+    address public owner;
+    address payable[] public players;
     uint public lotteryId;
-    uint public lotteryEndTime; // Timestamp for the end of the lottery period
-    mapping(uint => address) public lotteryHistory;
+    uint public lotteryEndTime;
+    mapping (uint => address payable) public lotteryHistory;
 
-    constructor(string memory name, string memory symbol, address vrfCoordinator, address linkToken, bytes32 _keyHash, uint256 _fee) ERC721(name, symbol) {
-        // VRF Chainlink variables initialized
-        keyHash = _keyHash;
-        fee = _fee;
-
-        // Lottery variables initialized
+    constructor() {
+        owner = msg.sender;
         lotteryId = 1;
-        lotteryEndTime = block.timestamp + 5 minutes; // Set the end time 3 days from deployment
-
-        // VRF Consumer Base instantiated
-        VRFConsumerBase(vrfCoordinator, linkToken);
+        // Set the lottery end time to 1 week from deployment
+        lotteryEndTime = block.timestamp + 1 weeks;
     }
 
-    // The rest of your functions and logic remains unchanged.
 
-    // Chainlink functions:
-    // Function for requesting randomness
-    function getRandomNumber() public returns (bytes32 requestId) {
-        require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK to pay fee");
-        requestId = requestRandomness(keyHash, fee);
-        return requestId;
+
+    // function for not waiting the 1week THIS IS ONLY FOR TESTING PURPOSES:
+     function setLotteryEndTime(uint newEndTime) public onlyowner {
+        lotteryEndTime = newEndTime;
+     }
+
+
+
+
+    // Get lotteryEndTime in readable numbers
+    function getTimeLeft() public view returns (uint daysLeft, uint hoursLeft, uint minutesLeft) {
+        uint timeRemaining = lotteryEndTime - block.timestamp;
+        daysLeft = timeRemaining / 1 days;
+        hoursLeft = (timeRemaining % 1 days) / 1 hours;
+        minutesLeft = (timeRemaining % 1 hours) / 1 minutes;
+
+        return (daysLeft, hoursLeft, minutesLeft);
     }
 
-    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
-        require(msg.sender == vrfCoordinator, "Fulfillment only permitted by Coordinator");
-        // Use the randomness to select the winner
-        uint index = randomness % totalSupply();
-        address winner = ownerOf(index);
-        payable(winner).transfer(address(this).balance);
-
-        // Reset contract state
-        lotteryId++;
-
-        // Update the winner's history
-        lotteryHistory[lotteryId] = winner;
-
-        // Reset the lottery end time for the next round
-        lotteryEndTime = block.timestamp + 3 days;
+    function getWinnerByLottery(uint lottery) public view returns (address payable) {
+        return lotteryHistory[lottery];
     }
 
-    // Lottery functions:
-    function getPotBalance() public view returns (uint) {
+    function getBalance() public view returns (uint) {
         return address(this).balance;
     }
 
-    function enterLotto() public payable {
-        require(block.timestamp < lotteryEndTime, "Lottery entry period has ended");
-        require(msg.value >= 0.000000000001 ether, "Insufficient funds, must be greater than or equal to 0.000000000001 ETH");
+    function getPlayers() public view returns (address payable[] memory) {
+        return players;
+    }
 
-        // Mint NFT to the user
-        uint256 tokenId = totalSupply() + 1;
-        _mint(msg.sender, tokenId);
+    function enterLottery() public payable {
+        // require that after 1 week players can no longer enter to this lottery
+        require(block.timestamp < lotteryEndTime, "Lottery entry period has ended, Please enter current/new one");
+        require(msg.value > .01 ether);
+
+        // address of player entering lottery
+        players.push(payable(msg.sender));
+
+        // Emit the LotteryEntered event
+        emit LotteryEntered(msg.sender, msg.value);
+
+
+    }
+
+    function getRandomNumber() public view returns (uint) {
+        return uint(keccak256(abi.encodePacked(owner, block.timestamp)));
+    }
+
+    /*
+    This pickWinner() function has the endTime modifier
+    which allows to pick the winner after the lottery ends
+    */
+    function pickWinner() public onlyowner endTime {
+        uint index = getRandomNumber() % players.length;
+        players[index].transfer(address(this).balance); 
+        lotteryHistory[lotteryId] = players[index];
+        lotteryId++;
+
+        // reset the state of the contract
+        players = new address payable[](0);
+
+    }
+     /*automatically reset the contract for the next round at a predefined interval,
+      you can add a reset function that can only be triggered after a specified duration:
+     */
+    function resetLottery() public onlyowner {
+    require(block.timestamp > lotteryEndTime + 1 weeks, "Time not elapsed for reset");
+
+     
+    }
+    // Modifier 1.
+    modifier onlyowner() {
+      require(msg.sender == owner);
+      _;
+    }
+
+    // Modifier 2.
+    modifier endTime() {
+        require(block.timestamp > lotteryEndTime, "Lottery period has not ended yet");
+        _;
     }
 }
